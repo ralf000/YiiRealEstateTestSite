@@ -19,5 +19,9 @@ return [
                 'cabinet/<action_cabinet:(settings|change-password)>' => 'cabinet/default/<action_cabinet>'
             ],
         ],
+        'image' => [
+            'class' => \yii\image\ImageDriver::className(),
+            'driver' => 'GD'
+        ]
     ],
 ];

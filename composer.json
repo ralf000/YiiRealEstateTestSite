@@ -21,10 +21,14 @@
         "phpmailer/phpmailer": "^5.2",
         "zyx/zyx-phpmailer": "@stable",
         "yiisoft/yii2-imagine": "^2.0",
-        "kartik-v/yii2-widget-fileinput": "@dev",
+        "kartik-v/yii2-widget-fileinput": "^1.0",
         "dmstr/yii2-adminlte-asset": "2.*",
         "2amigos/yii2-google-maps-library": "*",
-        "demogorgorn/yii2-ajax-submit-button": "dev-master"
+        "demogorgorn/yii2-ajax-submit-button": "dev-master",
+        "larapack/dd": "1.*",
+        "kartik-v/yii2-widget-select2": "^2.1",
+        "vova07/yii2-imperavi-widget": "*",
+        "yurkinx/yii2-image": "^1.1"
     },
     "require-dev": {
         "yiisoft/yii2-codeception": "*",

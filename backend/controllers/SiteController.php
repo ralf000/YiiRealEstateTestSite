@@ -1,8 +1,15 @@
 <?php
 namespace backend\controllers;
 
+use backend\models\BlogSearch;
+use common\models\Blog;
+use common\models\BlogTag;
 use common\models\LoginForm;
+use common\models\Tag;
+use Faker\Factory;
 use Yii;
+use yii\base\Exception;
+use yii\data\ActiveDataProvider;
 use yii\filters\AccessControl;
 use yii\filters\VerbFilter;
 use yii\web\Controller;
@@ -26,7 +33,7 @@ class SiteController extends Controller
                         'allow' => true,
                     ],
                     [
-                        'actions' => ['logout', 'index'],
+                        'actions' => ['logout', 'index', 'test'],
                         'allow' => true,
                         'roles' => ['@'],
                     ],
@@ -79,5 +86,12 @@ class SiteController extends Controller
         Yii::$app->user->logout();
 
         return $this->goHome();
+    }
+
+    public function actionTest()
+    {
+        $blogSearch = new BlogSearch();
+        $dataProvider = $blogSearch->search(Yii::$app->request->queryParams);
+        return $this->render('test', compact('blogSearch', 'dataProvider'));
     }
 }

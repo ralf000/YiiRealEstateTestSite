@@ -41,6 +41,7 @@ use yii\bootstrap\Nav;
                     ['label' => '<span class="fa fa-file-code-o"></span> Adverts', 'url' => ['/advert']],
                     ['label' => '<span class="fa fa-file-code-o"></span> Gii', 'url' => ['/gii']],
                     ['label' => '<span class="fa fa-dashboard"></span> Debug', 'url' => ['/debug']],
+                    ['label' => '<span class="fa fa-dashboard"></span> test', 'url' => ['/site/test']],
                     [
                         'label' => '<span class="glyphicon glyphicon-lock"></span> Sing in', //for basic
                         'url' => ['/site/login'],
