@@ -28,7 +28,13 @@
         "larapack/dd": "1.*",
         "kartik-v/yii2-widget-select2": "^2.1",
         "vova07/yii2-imperavi-widget": "*",
-        "yurkinx/yii2-image": "^1.1"
+        "yurkinx/yii2-image": "^1.1",
+        "kartik-v/yii2-datecontrol": "^1.9",
+        "kartik-v/yii2-widget-timepicker": "^1.0",
+        "kartik-v/yii2-widget-datepicker": "^1.4",
+        "kartik-v/yii2-widget-datetimepicker": "^1.4",
+        "kartik-v/yii2-date-range": "^1.6"
+
     },
     "require-dev": {
         "yiisoft/yii2-codeception": "*",

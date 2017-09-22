@@ -22,8 +22,8 @@ class BlogSearch extends Blog
     public function rules()
     {
         return [
-            [['id', 'user_id', 'created_at', 'updated_at'], 'integer'],
-            [['title', 'description', 'content', 'author', 'tags', 'status'], 'safe'],
+            [['id', 'user_id', 'updated_at'], 'integer'],
+            [['title', 'description', 'content', 'author', 'tags', 'status', 'created_at'], 'safe'],
         ];
     }
 
@@ -66,7 +66,8 @@ class BlogSearch extends Blog
                 ])
         ]);
 
-        $this->load($params);
+        $this->load($params['BlogSearch']);
+        $this->created_at = Yii::$app->request->get('created_at');
 
         if (!$this->validate()) {
             // uncomment the following line if you do not want to return any records when validation fails
@@ -74,7 +75,7 @@ class BlogSearch extends Blog
             return $dataProvider;
         }
 
-        $query->joinWith(['tags','author'])
+        $query->joinWith(['tags', 'author'])
             ->andFilterWhere([
                 'blog.id' => $this->id,
                 'user_id' => $this->user_id,
@@ -82,9 +83,25 @@ class BlogSearch extends Blog
                 'blog.status' => $this->status
             ]);
 
-        $query->andFilterWhere(['like', 'title', $this->title])
-            ->andFilterWhere(['like', 'description', $this->description])
+        $query->andFilterWhere(['like', 'blog.title', $this->title])
+            ->andFilterWhere(['like', 'blog.description', $this->description])
+            //->andFilterWhere(['>', 'blog.created_at', $this->created_at])
+            //или можно искать диапазон дат больше входной даты и меньше входной + 1 день
+            /*->andFilterWhere([
+                'and',
+                ['>', 'blog.created_at', $this->created_at],
+                ['<', 'blog.created_at', $this->created_at + (60 * 60 * 24)]
+            ])*/
             ->andFilterWhere(['like', 'username', $this->author]);
+
+        if ($this->created_at) {
+            $created_at = explode(' -', $this->created_at);
+            $query->andWhere([
+                'and',
+                ['>', 'blog.created_at', strtotime($created_at[0])],
+                ['<', 'blog.created_at', strtotime($created_at[1])]
+            ]);
+        }
         return $dataProvider;
     }
 }

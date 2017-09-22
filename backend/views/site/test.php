@@ -20,7 +20,6 @@ use yii\helpers\Url;
             'filter' => false
         ],
         'title',
-        'description',
         'thumbnail:image',
         [
             'attribute' => 'author',
@@ -50,10 +49,21 @@ use yii\helpers\Url;
         ],
         [
             'attribute' => 'created_at',
-            'value' => function (Blog $model) {
-                return date('H:i:s d-m-Y', $model->created_at);
-            },
-            'filter' => false
+            'format' => 'datetime',
+            'value' => 'created_at',
+            'filter' => \kartik\datecontrol\DateControl::widget([
+                'model' => $blogSearch,
+                'attribute' => 'created_at',
+                'saveFormat' => 'php:U'
+            ])
+        ],
+        [
+            'attribute' => 'created_at',
+            'format' => 'datetime',
+            'value' => 'created_at',
+            'filter' => \kartik\daterange\DateRangePicker::widget([
+                'name' => 'created_at',
+            ])
         ],
         [
             'attribute' => 'updated_at',
