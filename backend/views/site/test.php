@@ -5,11 +5,17 @@ use common\models\User;
 use yii\grid\GridView;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Url;
+use yii\widgets\Pjax;
 
 ?>
 
-<?= \yii\helpers\Html::a('Новая запись', Url::toRoute(['blog/create']), ['class' => 'btn btn-primary pull-right']) ?>
-
+<?php if (Yii::$app->user->can('can create notes of blog')): ?>
+    <?= \yii\helpers\Html::a('Новая запись', Url::toRoute(['blog/create']), ['class' => 'btn btn-primary pull-right']) ?>
+<?php endif; ?>
+<?php Pjax::begin([
+    'enablePushState' => false,
+    'timeout' => 20000
+]) ?>
 <?= GridView::widget([
     'dataProvider' => $dataProvider,
     'filterModel' => $blogSearch,
@@ -88,3 +94,63 @@ use yii\helpers\Url;
         ]
     ]
 ]); ?>
+<?php Pjax::end() ?>
+
+<div id="loading" style="display: none;"><img
+            src="https://ea69e954660a5bfe03d0-eb6d7e0fbdb68b2cf5905bd4f8f28c48.ssl.cf5.rackcdn.com/stowify_resources/images/loading4_old.gif"
+            alt=""></div>
+<?php Pjax::begin([
+    'enablePushState' => false,
+    'timeout' => 20000
+]) ?>
+<a id="link" href="<?= Url::to('/site/testlink') ?>" class="btn btn-lg btn-danger">Тестовая ссылка</a>
+<?php Pjax::end() ?>
+
+<div class="modal fade" id="modal-default">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span></button>
+                <h4 class="modal-title">Default Modal</h4>
+            </div>
+            <div class="modal-body">
+                <p>One fine body…</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary">Save changes</button>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+
+<?php
+$js = <<<JS
+$(document).on('pjax:send', function() {
+  $('#loading').show()
+});
+$(document).on('pjax:complete', function() {
+  $('#loading').hide()
+});
+$('a[href*=update]').on('click', function(e) {
+  e.preventDefault();
+  $('.fa-spin').fadeIn();
+  var href = $(this).attr('href');
+  var pos = href.indexOf('id=');
+  var id = $(this).attr('href').substr(pos + 3);
+  var modal = $('#modal-default');
+  $('body').append('')
+  modal.find('.modal-body').load('/blog/update?id='+id, function(responce, status) {
+    if (status == 'success'){
+        $('.fa-spin').fadeOut();
+        modal.modal('show');
+    }
+  });
+})
+JS;
+/** @var \yii\web\View $this */
+$this->registerJs($js, \yii\web\View::POS_END);
+?>

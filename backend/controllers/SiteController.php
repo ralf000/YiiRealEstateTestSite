@@ -1,6 +1,7 @@
 <?php
 namespace backend\controllers;
 
+use app\models\SignupForm;
 use backend\models\BlogSearch;
 use common\models\Blog;
 use common\models\BlogTag;
@@ -12,7 +13,9 @@ use yii\base\Exception;
 use yii\data\ActiveDataProvider;
 use yii\filters\AccessControl;
 use yii\filters\VerbFilter;
+use yii\helpers\Url;
 use yii\web\Controller;
+use yii\web\User;
 
 /**
  * Site controller
@@ -29,13 +32,18 @@ class SiteController extends Controller
                 'class' => AccessControl::className(),
                 'rules' => [
                     [
-                        'actions' => ['login', 'error'],
+                        'actions' => ['login', 'error', 'signup'],
                         'allow' => true,
+                    ],
+                    [
+                        'actions' => ['logout', 'test', 'testlink'],
+                        'allow' => true,
+                        'roles' => ['@'],
                     ],
                     [
                         'actions' => ['logout', 'index', 'test'],
                         'allow' => true,
-                        'roles' => ['@'],
+                        'roles' => ['admin', 'content-manager'],
                     ],
                 ],
             ],
@@ -63,6 +71,23 @@ class SiteController extends Controller
     public function actionIndex()
     {
         return $this->render('index');
+    }
+
+    public function actionSignup()
+    {
+        $model = new SignupForm();
+
+        if ($model->load(Yii::$app->request->post())) {
+            if ($user = $model->signup()) {
+                if (Yii::$app->getUser()->login($user)) {
+                    return $this->goHome();
+                }
+            }
+        }
+
+        return $this->render('signup', [
+            'model' => $model,
+        ]);
     }
 
     public function actionLogin()
@@ -93,5 +118,11 @@ class SiteController extends Controller
         $blogSearch = new BlogSearch();
         $dataProvider = $blogSearch->search(Yii::$app->request->queryParams);
         return $this->render('test', compact('blogSearch', 'dataProvider'));
+    }
+
+    public function actionTestlink()
+    {
+        $model = new Blog();
+        return $this->renderAjax('/blog/_form', ['model' => $model]);
     }
 }

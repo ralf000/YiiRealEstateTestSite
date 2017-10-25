@@ -1,10 +1,12 @@
 <?php
 namespace common\models;
 
+use backend\models\AuthItem;
 use Yii;
 use yii\base\NotSupportedException;
 use yii\behaviors\TimestampBehavior;
 use yii\db\ActiveRecord;
+use yii\helpers\ArrayHelper;
 use yii\web\IdentityInterface;
 
 /**
@@ -25,6 +27,10 @@ class User extends ActiveRecord implements IdentityInterface
 {
     const STATUS_DELETED = 0;
     const STATUS_ACTIVE = 10;
+
+    public $roles = [];
+
+    public $role;
 
     /**
      * @inheritdoc
@@ -50,6 +56,8 @@ class User extends ActiveRecord implements IdentityInterface
     public function rules()
     {
         return [
+            ['role', 'string'],
+            [['role'], 'exist', 'targetClass' => AuthItem::className(), 'targetAttribute' => ['role' => 'name']],
             ['status', 'default', 'value' => self::STATUS_ACTIVE],
             ['status', 'in', 'range' => [self::STATUS_ACTIVE, self::STATUS_DELETED]],
         ];
@@ -61,7 +69,13 @@ class User extends ActiveRecord implements IdentityInterface
         
         return $scenarios;
     }
-    
+
+    public function afterFind()
+    {
+        $this->roles = ArrayHelper::map(AuthItem::find()->select('name')->all(), 'name', 'name');
+        return parent::afterFind();
+    }
+
 
     /**
      * @inheritdoc
@@ -192,5 +206,10 @@ class User extends ActiveRecord implements IdentityInterface
     public function removePasswordResetToken()
     {
         $this->password_reset_token = null;
+    }
+
+    public static function getUserRole($id)
+    {
+        return key(Yii::$app->authManager->getRolesByUser($id));
     }
 }

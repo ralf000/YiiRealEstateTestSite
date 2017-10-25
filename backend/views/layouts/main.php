@@ -32,6 +32,7 @@ if (Yii::$app->controller->action->id === 'login') {
     </head>
     <body class="skin-blue sidebar-mini">
     <?php $this->beginBody() ?>
+    <i class="fa fa-refresh fa-spin"></i>
     <div class="wrapper">
 
         <?= $this->render(

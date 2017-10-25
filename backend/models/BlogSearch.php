@@ -50,7 +50,7 @@ class BlogSearch extends Blog
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
             'pagination' => [
-                'pageSize' => 40,
+                'pageSize' => 10,
             ],
         ]);
 
